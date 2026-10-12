@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>new mochi — Small Character. Big Adventures.</title>
+<meta name="description" content="MOCHI — Small Character. Big Adventures. A curious little explorer. Game and token launching soon." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23140D08'/%3E%3Cg fill='%23F6A623'%3E%3Cellipse cx='24' cy='31' rx='11' ry='9'/%3E%3Cellipse cx='12' cy='19' rx='4' ry='5'/%3E%3Cellipse cx='19.5' cy='13.5' rx='4' ry='5.2'/%3E%3Cellipse cx='28.5' cy='13.5' rx='4' ry='5.2'/%3E%3Cellipse cx='36' cy='19' rx='4' ry='5'/%3E%3C/g%3E%3C/svg%3E" />
+<style>
+:root{--cream:#F4E6D4;--fawn:#C9A27A;--cocoa:#8A5A36;--core:#F6A623;--core2:#FFC65C;--sky:#DCF1FA;--bg:#0B0705;--bg2:#140D08;--panel:#1A110B;--panel2:#22160E;--line:rgba(244,230,212,.12);--line2:rgba(244,230,212,.22);--ink:#F7EEE2;--dim:#C9B6A1;--mut:#8C7C6C;--glow:rgba(246,166,35,.45);--glowsoft:rgba(246,166,35,.16);--r:22px;--max:1200px;--ease:cubic-bezier(.22,1,.36,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.loading{overflow:hidden}
+::selection{background:var(--core);color:#1a0f05}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+/* ambient */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1000px 700px at 72% -5%,rgba(246,166,35,.18),transparent 60%),radial-gradient(800px 600px at 10% 110%,rgba(138,90,54,.22),transparent 60%),linear-gradient(180deg,#0B0705,#140D08 50%,#0B0705)}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* preloader */
+#pre{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;place-content:center;justify-items:center;gap:18px;transition:opacity .6s var(--ease),visibility .6s}
+#pre.done{opacity:0;visibility:hidden}
+.ring{width:80px;height:80px;border-radius:50%;border:2px solid var(--line2);border-top-color:var(--core);animation:spin .9s linear infinite;display:grid;place-items:center;font-weight:800;font-size:26px;color:var(--cream)}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(18px,5vw,48px);border-bottom:1px solid transparent;transition:.35s var(--ease)}
+nav.stuck{background:rgba(11,7,5,.78);backdrop-filter:blur(16px);border-color:var(--line);padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:21px;letter-spacing:1px}
+.brand i{color:var(--core);font-style:normal;font-size:24px;filter:drop-shadow(0 0 10px var(--glow))}
+.brand b{background:linear-gradient(100deg,var(--cream),var(--core2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.links{display:flex;gap:26px}
+.links a{font-size:14.5px;color:var(--dim);position:relative}
+.links a::after{content:"";position:absolute;left:0;bottom:-3px;width:0;height:2px;background:var(--core);transition:.3s var(--ease)}
+.links a:hover,.links a.on{color:var(--ink)}
+.links a:hover::after,.links a.on::after{width:100%}
+.soc{display:flex;gap:10px}
+.ibtn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);color:var(--dim);transition:.3s}
+.ibtn:hover{background:var(--core);color:#1a0f05;transform:translateY(-2px)}
+#tog{display:none;width:42px;height:42px;border-radius:12px;background:var(--panel);border:1px solid var(--line);color:var(--ink);font-size:20px;cursor:pointer}
+#mm{position:fixed;inset:0;z-index:49;background:rgba(11,7,5,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;visibility:hidden;transition:.35s}
+#mm.open{opacity:1;visibility:visible}
+#mm a{font-size:26px;font-weight:700}
+/* layout */
+main{position:relative;z-index:2}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(18px,5vw,48px)}
+section{padding:clamp(70px,10vh,120px) 0}
+/* hero */
+.hero{min-height:100svh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:36px;max-width:var(--max);margin:0 auto;padding:130px clamp(18px,5vw,48px) 70px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:12.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--core2);padding:8px 15px;border:1px solid var(--line2);border-radius:999px;background:var(--glowsoft)}
+.dotping{width:8px;height:8px;border-radius:50%;background:var(--core);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 var(--glow)}70%,100%{box-shadow:0 0 0 10px transparent}}
+h1.word{font-size:clamp(64px,11vw,130px);font-weight:800;letter-spacing:3px;line-height:.95;margin:20px 0 4px;background:linear-gradient(100deg,var(--cream) 10%,var(--core2) 55%,var(--core));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 8px 26px rgba(246,166,35,.25))}
+.tag{font-family:Georgia,serif;font-size:clamp(22px,3.2vw,34px);line-height:1.15;margin-bottom:16px}
+.tag em{color:var(--core2)}
+.desc{color:var(--dim);font-size:16.5px;max-width:450px;margin-bottom:28px}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid transparent;cursor:pointer;transition:.3s var(--ease)}
+.btn.p{background:linear-gradient(100deg,var(--core2),var(--core));color:#1a0f05;box-shadow:0 10px 28px var(--glow)}
+.btn.p:hover{transform:translateY(-3px)}
+.btn.g{border-color:var(--line2);color:var(--ink)}
+.btn.g:hover{border-color:var(--core);transform:translateY(-3px)}
+.verbs{display:flex;gap:11px;list-style:none;font-weight:700;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut)}
+.verbs b{color:var(--core)}
+.stage{position:relative;display:grid;place-items:center;min-height:420px;perspective:1000px}
+.stage img.heroimg{width:min(100%,520px);border-radius:44% 56% 52% 48%/48% 46% 54% 52%;object-fit:cover;aspect-ratio:1;box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 90px var(--glowsoft);animation:floaty 6s var(--ease) infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.halo{position:absolute;width:min(88%,480px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 50% 46%,var(--glow) 0%,transparent 62%);filter:blur(8px);animation:halo 5s var(--ease) infinite;z-index:-1}
+@keyframes halo{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.07)}}
+.orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,224,150,.9),rgba(246,166,35,.3) 60%,transparent 72%)}
+.o1{width:80px;height:80px;top:8%;left:4%;animation:floaty 8s var(--ease) infinite}
+.o2{width:52px;height:52px;bottom:12%;right:8%;animation:floaty 7s var(--ease) infinite reverse}
+/* marquee */
+.mq{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--panel),var(--panel2));overflow:hidden;padding:15px 0;position:relative;z-index:2}
+.mq div{display:flex;gap:40px;width:max-content;animation:sx 24s linear infinite;font-family:Georgia,serif;font-style:italic;font-size:24px;white-space:nowrap}
+.mq span.paw{font-style:normal;color:var(--core);font-size:18px}
+@keyframes sx{to{transform:translateX(-50%)}}
+/* heads */
+.kick{display:inline-block;font-weight:700;font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:var(--core2);padding:6px 14px;border:1px solid var(--line2);border-radius:999px;margin-bottom:14px}
+h2.t{font-family:Georgia,serif;font-size:clamp(30px,4.8vw,54px);line-height:1.06;letter-spacing:-.5px}
+h2.t em{color:var(--core2)}
+.sub{color:var(--dim);margin-top:12px;font-size:16.5px}
+.center{text-align:center}
+.center .sub{margin-left:auto;margin-right:auto;max-width:560px}
+/* about */
+.agrid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,64px);margin-top:48px;align-items:start}
+.lead{font-size:18px;color:var(--dim);margin-bottom:18px}
+.traits{font-family:Georgia,serif;font-style:italic;font-size:23px;color:var(--ink)}
+.traits strong{color:var(--core2);font-style:normal}
+.pils{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pil{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--r);padding:24px;transition:.35s var(--ease)}
+.pil:hover{transform:translateY(-6px);border-color:var(--line2);box-shadow:0 18px 44px rgba(0,0,0,.4)}
+.pil .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:25px;background:var(--glowsoft);border:1px solid var(--line2)}
+.pil h3{font-size:20px;margin:13px 0 5px}
+.pil p{font-size:14px;color:var(--mut)}
+.pal{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:48px}
+.pal small{letter-spacing:2px;text-transform:uppercase;color:var(--mut);font-weight:700;font-size:12px}
+.sw{display:flex;gap:12px;list-style:none;flex-wrap:wrap}
+.sw li{width:88px;height:68px;border-radius:12px;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.15);transition:.3s var(--ease);font-size:11px;font-weight:800;color:rgba(26,15,5,.75)}
+.sw li span{position:absolute;left:9px;bottom:7px}
+.sw li:hover{transform:translateY(-5px) scale(1.04)}
+/* grids */
+.grid6{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:48px}
+.card{background:linear-gradient(165deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--r);padding:20px 14px;text-align:center;transition:.35s var(--ease)}
+.card:hover{transform:translateY(-7px);border-color:var(--line2);box-shadow:0 18px 40px rgba(0,0,0,.42)}
+.card .art{aspect-ratio:1;display:grid;place-items:center;font-size:52px;background:radial-gradient(circle at 50% 40%,var(--glowsoft),transparent 70%);border-radius:14px;margin-bottom:10px}
+.card figcaption,.card h3{font-weight:700}
+.card .lab{color:var(--dim);font-size:14.5px;font-weight:600}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+.move{padding:30px 26px;text-align:left;position:relative;overflow:hidden}
+.move .idx{font-family:Georgia,serif;color:var(--core2);letter-spacing:2px;font-size:13px}
+.move .art{height:100px;display:grid;place-items:center;font-size:58px;animation:floaty 3.4s var(--ease) infinite}
+.move p{color:var(--mut);font-size:14.5px}
+/* details */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(26px,4vw,52px);margin-top:48px}
+.dlab{font-weight:800;letter-spacing:1px;text-transform:uppercase;font-size:13px;color:var(--core2);margin-bottom:18px}
+.trow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.turn div{aspect-ratio:3/4;border-radius:12px;display:grid;place-items:end center;padding-bottom:12px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);font-weight:700;font-size:13px;color:var(--dim);transition:.3s}
+.turn:hover div{transform:translateY(-5px);border-color:var(--line2)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feat{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:22px;transition:.3s}
+.feat:hover{transform:translateY(-5px);border-color:var(--line2)}
+.feat h4{font-size:17px;margin-bottom:5px}
+.feat p{font-size:13.5px;color:var(--mut)}
+/* roadmap */
+.tl{max-width:880px;margin:48px auto 0;list-style:none;position:relative}
+.tl::before{content:"";position:absolute;left:26px;top:10px;bottom:10px;width:2px;background:linear-gradient(180deg,var(--core),var(--cocoa) 85%,transparent)}
+.ph{position:relative;padding-left:72px;margin-bottom:24px}
+.pn{position:absolute;left:18px;top:24px;width:18px;height:18px;border-radius:50%;background:var(--core);border:3px solid var(--bg);box-shadow:0 0 0 3px var(--glowsoft),0 0 16px var(--glow)}
+.pc{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--r);padding:24px 26px;transition:.35s var(--ease)}
+.pc:hover{transform:translateX(8px);border-color:var(--line2)}
+.ptag{display:inline-block;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--core2);background:var(--glowsoft);border:1px solid var(--line2);padding:5px 12px;border-radius:999px;margin-bottom:10px}
+.pc h3{font-size:22px;margin-bottom:5px}
+.pc p{color:var(--dim);font-size:15px}
+/* join */
+.joinbox{position:relative;overflow:hidden;text-align:center;padding:clamp(44px,7vw,84px) clamp(22px,5vw,64px);border-radius:32px;background:linear-gradient(165deg,var(--panel),var(--bg2));border:1px solid var(--line2)}
+.joinbox::before{content:"";position:absolute;left:50%;top:-70px;width:230px;height:230px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 65%);filter:blur(18px)}
+.jcards{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:740px;margin:32px auto 0;position:relative}
+.jc{display:block;text-align:left;padding:30px;border-radius:var(--r);background:rgba(11,7,5,.5);border:1px solid var(--line2);transition:.35s var(--ease)}
+.jc:hover{transform:translateY(-7px);border-color:var(--core);box-shadow:0 24px 55px rgba(0,0,0,.5)}
+.jc .ji{width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:var(--glowsoft);border:1px solid var(--line2);color:var(--core2);margin-bottom:16px}
+.jc h3{font-size:21px;margin-bottom:5px}
+.jc p{color:var(--dim);font-size:14.5px;margin-bottom:12px}
+.jc .h{font-family:Georgia,serif;font-style:italic;color:var(--core2);font-size:14.5px}
+/* footer */
+footer{position:relative;z-index:2;border-top:1px solid var(--line);background:var(--bg2);padding:48px clamp(18px,5vw,48px) 26px}
+.ftop{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.ftag{font-family:Georgia,serif;font-style:italic;color:var(--dim)}
+.fsoc{display:flex;gap:18px}
+.fsoc a{font-weight:700;color:var(--dim)}
+.fsoc a:hover{color:var(--core)}
+.fbot{max-width:var(--max);margin:20px auto 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--mut);font-size:13px}
+/* reveal */
+[rv]{opacity:0;transform:translateY(34px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+[rv].vis{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--core);outline-offset:3px}
+@media(max-width:1020px){.hero{grid-template-columns:1fr;text-align:center}.stage{order:-1;min-height:340px}.desc{margin-left:auto;margin-right:auto}.btns,.verbs{justify-content:center}.agrid{grid-template-columns:1fr}.grid6{grid-template-columns:repeat(3,1fr)}.grid3{grid-template-columns:1fr 1fr}.dgrid{grid-template-columns:1fr}}
+@media(max-width:700px){.links,.soc{display:none}#tog{display:block}.pils,.grid3,.jcards,.frow{grid-template-columns:1fr}.grid6{grid-template-columns:1fr 1fr}.trow{grid-template-columns:1fr 1fr}.btn{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}[rv]{opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body class="loading">
+<div class="ambient"></div><div class="grain"></div>
+<div id="pre"><div class="ring">M</div><p>Waking up Mochi...</p></div>
+
+<nav id="nav">
+  <a class="brand" href="#top"><i>🐾</i><b>MOCHI</b></a>
+  <div class="links">
+    <a href="#about">About</a><a href="#expr">Expressions</a><a href="#play">Gameplay</a><a href="#road">Roadmap</a><a href="#join">Join</a>
+  </div>
+  <div class="soc">
+    <a class="ibtn" href="https://x.com/play_mochii" target="_blank" rel="noopener" aria-label="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+    <a class="ibtn" href="https://t.me/play_mochi" target="_blank" rel="noopener" aria-label="Telegram"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.248-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.14.121.099.155.232.171.326.016.094.036.307.02.473z"/></svg></a>
+  </div>
+  <button id="tog" aria-label="Menu">☰</button>
+</nav>
+<div id="mm"><a href="#about">About</a><a href="#expr">Expressions</a><a href="#play">Gameplay</a><a href="#road">Roadmap</a><a href="#join">Join</a></div>
+
+<main id="top">
+<section class="hero">
+  <div>
+    <span class="eyebrow"><span class="dotping"></span>The adventure begins</span>
+    <h1 class="word">MOCHI</h1>
+    <p class="tag">Small character.<br /><em>Big adventures.</em></p>
+    <p class="desc">A curious little explorer on an endless journey through luminous, mysterious worlds — collecting treasures and discovering what lies beyond.</p>
+    <div class="btns"><a class="btn p" href="#join">Join the adventure →</a><a class="btn g" href="#play">See the gameplay</a></div>
+    <ul class="verbs"><li>Run</li><li><b>·</b></li><li>Collect</li><li><b>·</b></li><li>Explore</li><li><b>·</b></li><li>Grow</li></ul>
+  </div>
+  <div class="stage"><span class="halo"></span><span class="orb o1"></span><span class="orb o2"></span><img class="heroimg" src="mochi-art.jpg" alt="Mochi — official character art" /></div>
+</section>
+
+<div class="mq"><div><span>Brave</span><span class="paw">🐾</span><span>Playful</span><span class="paw">🐾</span><span>Determined</span><span class="paw">🐾</span><span>Mochi never stops</span><span class="paw">🐾</span><span>Brave</span><span class="paw">🐾</span><span>Playful</span><span class="paw">🐾</span><span>Determined</span><span class="paw">🐾</span><span>Mochi never stops</span><span class="paw">🐾</span></div></div>
+
+<section id="about"><div class="wrap">
+  <div class="center" rv><span class="kick">About Mochi</span><h2 class="t">A little explorer with <em>a very big dream</em></h2></div>
+  <div class="agrid">
+    <div rv><p class="lead">Born in a world full of mysteries, Mochi sets out on endless runs — collecting treasures, uncovering hidden places, and discovering what lies beyond the horizon.</p><p class="traits">Brave. Playful. Determined. <strong>Mochi never stops.</strong></p></div>
+    <div class="pils" rv>
+      <div class="pil"><span class="ic">🏃</span><h3>Run</h3><p>Endless sprints across living worlds.</p></div>
+      <div class="pil"><span class="ic">🪙</span><h3>Collect</h3><p>Gather treasures and unlock rewards.</p></div>
+      <div class="pil"><span class="ic">⛰️</span><h3>Explore</h3><p>Find hidden places and secrets.</p></div>
+      <div class="pil"><span class="ic">⭐</span><h3>Grow</h3><p>Level up and unlock new abilities.</p></div>
+    </div>
+  </div>
+  <div class="pal" rv><small>Palette</small><ul class="sw">
+    <li data-hex="#F4E6D4" style="background:#F4E6D4"><span>Cream</span></li>
+    <li data-hex="#C9A27A" style="background:#C9A27A"><span>Fawn</span></li>
+    <li data-hex="#8A5A36" style="background:#8A5A36"><span>Cocoa</span></li>
+    <li data-hex="#F6A623" style="background:#F6A623"><span>Core</span></li>
+    <li data-hex="#DCF1FA" style="background:#DCF1FA"><span>Sky</span></li>
+  </ul></div>
+</div></section>
+
+<section id="expr"><div class="wrap">
+  <div class="center" rv><span class="kick">Expressions</span><h2 class="t">Every mood on <em>the journey</em></h2><p class="sub">Mochi's emotions bring the adventure to life.</p></div>
+  <div class="grid6">
+    <figure class="card" rv><div class="art">😊</div><figcaption class="lab">Happy</figcaption></figure>
+    <figure class="card" rv><div class="art">😆</div><figcaption class="lab">Excited</figcaption></figure>
+    <figure class="card" rv><div class="art">😤</div><figcaption class="lab">Determined</figcaption></figure>
+    <figure class="card" rv><div class="art">😲</div><figcaption class="lab">Surprised</figcaption></figure>
+    <figure class="card" rv><div class="art">🥺</div><figcaption class="lab">Sad</figcaption></figure>
+    <figure class="card" rv><div class="art">😴</div><figcaption class="lab">Sleepy</figcaption></figure>
+  </div>
+</div></section>
+
+<section id="play"><div class="wrap">
+  <div class="center" rv><span class="kick">In-game animations</span><h2 class="t">Dynamic by <em>design</em></h2><p class="sub">A fluid moveset built for an endless runner.</p></div>
+  <div class="grid3">
+    <div class="card move" rv><div class="idx">01</div><div class="art">🏃</div><h3>Run</h3><p>Momentum that never breaks.</p></div>
+    <div class="card move" rv><div class="idx">02</div><div class="art">🦘</div><h3>Jump</h3><p>Clear gaps and reach the sky.</p></div>
+    <div class="card move" rv><div class="idx">03</div><div class="art">🛝</div><h3>Slide</h3><p>Duck beneath danger at speed.</p></div>
+    <div class="card move" rv><div class="idx">04</div><div class="art">🪙</div><h3>Collect</h3><p>Snatch coins and rare treasures.</p></div>
+    <div class="card move" rv><div class="idx">05</div><div class="art">💫</div><h3>Hit</h3><p>Stumble, recover, keep going.</p></div>
+    <div class="card move" rv><div class="idx">06</div><div class="art">🏆</div><h3>Victory</h3><p>Celebrate every new record.</p></div>
+  </div>
+</div></section>
+
+<section id="detail"><div class="wrap">
+  <div class="center" rv><span class="kick">Character detail</span><h2 class="t">Crafted down to <em>the fur</em></h2></div>
+  <div class="dgrid">
+    <div rv><p class="dlab">Turnaround</p><div class="trow"><div class="turn"><div>Front</div></div><div class="turn"><div>Side</div></div><div class="turn"><div>Back</div></div><div class="turn"><div>Angle</div></div></div></div>
+    <div rv><p class="dlab">Key features</p><div class="frow"><div class="feat"><h4>Mochi Core</h4><p>The glowing energy source at the heart.</p></div><div class="feat"><h4>Backpack</h4><p>Storage for every treasure found.</p></div><div class="feat"><h4>Paw Pads</h4><p>Grip and speed on any terrain.</p></div><div class="feat"><h4>Fur Texture</h4><p>Soft, detailed, full of life.</p></div></div></div>
+  </div>
+</div></section>
+
+<section id="road"><div class="wrap">
+  <div class="center" rv><span class="kick">The journey ahead</span><h2 class="t">What's <em>coming next</em></h2></div>
+  <ol class="tl">
+    <li class="ph" rv><span class="pn"></span><div class="pc"><span class="ptag">Coming soon</span><h3>Game Launch</h3><p>Experience Mochi's adventure in an immersive endless runner.</p></div></li>
+    <li class="ph" rv><span class="pn"></span><div class="pc"><span class="ptag">Coming soon</span><h3>Token Launch</h3><p>Join the MOCHI ecosystem with exclusive rewards and benefits.</p></div></li>
+    <li class="ph" rv><span class="pn"></span><div class="pc"><span class="ptag">Planned</span><h3>Community Rewards</h3><p>Earn through gameplay and participation.</p></div></li>
+    <li class="ph" rv><span class="pn"></span><div class="pc"><span class="ptag">Future</span><h3>Expanded Universe</h3><p>New worlds, characters, and adventures.</p></div></li>
+  </ol>
+</div></section>
+
+<section id="join"><div class="wrap"><div class="joinbox" rv>
+  <h2 class="t">Be there from <em>the very first run</em></h2>
+  <p class="sub" style="max-width:520px;margin:14px auto 0">Follow along for updates, sneak peeks, and the game &amp; token launch.</p>
+  <div class="jcards">
+    <a class="jc" href="https://x.com/play_mochii" target="_blank" rel="noopener"><span class="ji"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span><h3>Follow on X</h3><p>Updates, announcements &amp; sneak peeks.</p><span class="h">@play_mochii</span></a>
+    <a class="jc" href="https://t.me/play_mochi" target="_blank" rel="noopener"><span class="ji"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.248-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.14.121.099.155.232.171.326.016.094.036.307.02.473z"/></svg></span><h3>Join Telegram</h3><p>Chat with the community in real time.</p><span class="h">t.me/play_mochi</span></a>
+  </div>
+</div></div></section>
+</main>
+
+<footer>
+  <div class="ftop"><a class="brand" href="#top"><i>🐾</i><b>MOCHI</b></a><p class="ftag">Small character. Big adventures.</p><div class="fsoc"><a href="https://x.com/play_mochii" target="_blank" rel="noopener">X</a><a href="https://t.me/play_mochi" target="_blank" rel="noopener">Telegram</a></div></div>
+  <div class="fbot"><p>© <span id="yr"></span> MOCHI. All rights reserved.</p><p>Game &amp; token launching soon.</p></div>
+</footer>
+
+<script>
+(function(){var rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+document.getElementById("yr").textContent=new Date().getFullYear();
+function hidePre(){document.body.classList.remove("loading");var p=document.getElementById("pre");if(p)p.classList.add("done")}
+window.addEventListener("load",function(){setTimeout(hidePre,rm?0:450)});setTimeout(hidePre,3200);
+var nav=document.getElementById("nav"),tog=document.getElementById("tog"),mm=document.getElementById("mm");
+addEventListener("scroll",function(){nav.classList.toggle("stuck",scrollY>30)},{passive:true});
+tog.addEventListener("click",function(){mm.classList.toggle("open")});
+mm.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){mm.classList.remove("open")})});
+document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener("click",function(e){var id=a.getAttribute("href");if(!id||id==="#")return;var t=document.querySelector(id);if(!t)return;e.preventDefault();mm.classList.remove("open");var y=t.getBoundingClientRect().top+scrollY-(nav.offsetHeight+10);scrollTo({top:y,behavior:rm?"auto":"smooth"})})});
+var els=document.querySelectorAll("[rv]");
+if("IntersectionObserver" in window&&!rm){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("vis");io.unobserve(en.target)}})},{threshold:.14});els.forEach(function(el){io.observe(el)})}else{els.forEach(function(el){el.classList.add("vis")})}
+var spy=["about","expr","play","road","join"].map(function(id){return document.getElementById(id)}).filter(Boolean);
+if("IntersectionObserver" in window){var so=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;document.querySelectorAll(".links a").forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id)})})},{threshold:.4});spy.forEach(function(s){so.observe(s)})}
+document.querySelectorAll(".sw li").forEach(function(li){li.addEventListener("click",function(){var h=li.getAttribute("data-hex");if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(h).catch(function(){})}var o=li.querySelector("span").textContent;li.querySelector("span").textContent="Copied!";setTimeout(function(){li.querySelector("span").textContent=o},900)})});
+})();
+</script>
+</body>
+</html>
